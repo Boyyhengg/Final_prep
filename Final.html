@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C++ Exam Mastery: 100 Questions</title>
+    <style>
+        :root {
+            --primary: #1d4ed8;
+            --primary-dark: #1e3a8a;
+            --accent: #f59e0b;
+            --secondary: #64748b;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #f97316;
+            --bg: #eef2f7;
+            --panel: #ffffff;
+            --panel-soft: #f8fafc;
+            --border: #dbe3ef;
+            --text: #162033;
+            --muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(245, 158, 11, 0.18), transparent 32rem),
+                linear-gradient(135deg, #eef2f7 0%, #f8fafc 52%, #e0f2fe 100%);
+            color: var(--text);
+            margin: 0;
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .quiz-container {
+            max-width: 1120px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .app-shell {
+            display: grid;
+            grid-template-columns: 280px minmax(0, 1fr);
+            gap: 18px;
+            align-items: start;
+        }
+
+        .sidebar,
+        .quiz-panel,
+        #result-screen {
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(219, 227, 239, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 20px 45px -30px rgba(15, 23, 42, 0.55);
+        }
+
+        .sidebar {
+            padding: 18px;
+            position: sticky;
+            top: 20px;
+        }
+
+        .brand {
+            margin-bottom: 18px;
+        }
+
+        .brand h1 {
+            font-size: 1.35rem;
+            line-height: 1.15;
+            margin: 0 0 8px;
+        }
+
+        .brand p {
+            color: var(--muted);
+            margin: 0;
+            font-size: 0.92rem;
+            line-height: 1.45;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .stat {
+            background: var(--panel-soft);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .stat span {
+            color: var(--muted);
+            display: block;
+            font-size: 0.78rem;
+            margin-bottom: 4px;
+        }
+
+        .stat strong {
+            font-size: 1.25rem;
+        }
+
+        .controls {
+            display: grid;
+            gap: 10px;
+        }
+
+        .control-btn,
+        .chip,
+        #next-btn,
+        .option-btn,
+        .result-actions button {
+            font: inherit;
+        }
+
+        .control-btn,
+        .chip,
+        .result-actions button {
+            border: 1px solid var(--border);
+            background: white;
+            color: var(--text);
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 11px 12px;
+            font-weight: 700;
+            transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+        }
+
+        .control-btn:hover,
+        .chip:hover,
+        .result-actions button:hover {
+            transform: translateY(-1px);
+            border-color: var(--primary);
+        }
+
+        .control-btn.primary,
+        .result-actions .primary {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .filter-title {
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            margin: 18px 0 9px;
+            text-transform: uppercase;
+        }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .chip {
+            padding: 8px 10px;
+            font-size: 0.85rem;
+        }
+
+        .chip.active {
+            background: #dbeafe;
+            border-color: #93c5fd;
+            color: var(--primary-dark);
+        }
+
+        .quiz-panel {
+            padding: 26px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .category-tag {
+            background: #e0f2fe;
+            color: #075985;
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 800;
+        }
+
+        #progress-text {
+            color: var(--muted);
+            font-weight: 800;
+        }
+
+        .question {
+            font-size: clamp(1.35rem, 2.3vw, 2rem);
+            font-weight: 800;
+            line-height: 1.28;
+            margin: 1.4rem 0;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .option-btn {
+            padding: 14px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            text-align: left;
+            transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 58px;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background-color: #eff6ff;
+            box-shadow: 0 10px 25px -22px rgba(29, 78, 216, 0.8);
+            transform: translateY(-1px);
+        }
+
+        .option-key {
+            align-items: center;
+            background: var(--panel-soft);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            display: inline-flex;
+            flex: 0 0 34px;
+            font-weight: 900;
+            height: 34px;
+            justify-content: center;
+        }
+
+        .option-btn.correct {
+            background-color: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .option-btn.wrong {
+            background-color: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+
+        .option-btn.correct .option-key,
+        .option-btn.wrong .option-key {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(255, 255, 255, 0.35);
+            color: white;
+        }
+
+        .footer {
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        #feedback {
+            background: var(--panel-soft);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-weight: 800;
+            min-height: 46px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        #next-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 800;
+            cursor: pointer;
+            display: none;
+        }
+
+        #result-screen {
+            text-align: center;
+            display: none;
+            padding: 32px;
+        }
+
+        .score-circle {
+            align-items: center;
+            background: #eff6ff;
+            border: 10px solid #dbeafe;
+            border-radius: 50%;
+            color: var(--primary);
+            display: inline-flex;
+            font-size: 2.25rem;
+            font-weight: 900;
+            height: 150px;
+            justify-content: center;
+            margin: 1rem 0;
+            width: 150px;
+        }
+
+        progress {
+            width: 100%;
+            height: 12px;
+            border: 0;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        progress::-webkit-progress-bar {
+            background: #e2e8f0;
+        }
+
+        progress::-webkit-progress-value {
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+        }
+
+        .result-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 820px) {
+            body {
+                padding: 14px;
+            }
+
+            .app-shell {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+            }
+
+            .quiz-panel {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <div class="app-shell" id="app-shell">
+        <aside class="sidebar">
+            <div class="brand">
+                <h1>C++ Exam Mastery</h1>
+                <p>Practice 100 questions with instant feedback, topic filters, streak tracking, and review mode.</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat"><span>Score</span><strong id="score-text">0</strong></div>
+                <div class="stat"><span>Streak</span><strong id="streak-text">0</strong></div>
+                <div class="stat"><span>Best</span><strong id="best-streak-text">0</strong></div>
+                <div class="stat"><span>Time</span><strong id="timer-text">00:00</strong></div>
+            </div>
+
+            <div class="controls">
+                <button class="control-btn primary" onclick="startQuiz({ shuffle: true })">Shuffle Practice</button>
+                <button class="control-btn" onclick="startQuiz()">Restart Current Set</button>
+                <button class="control-btn" id="review-btn" onclick="reviewMissed()" disabled>Review Missed</button>
+            </div>
+
+            <div class="filter-title">Topics</div>
+            <div class="chips" id="category-filters"></div>
+        </aside>
+
+        <main class="quiz-panel" id="quiz-box">
+            <div class="header">
+                <span class="category-tag" id="category">Topic Name</span>
+                <span id="progress-text">1 / 100</span>
+            </div>
+            <progress id="progress-bar" value="1" max="100"></progress>
+            
+            <div class="question" id="question-text">Loading question...</div>
+            
+            <div class="options-grid" id="options-container"></div>
+
+            <div class="footer">
+                <div id="feedback">Choose an answer to continue.</div>
+                <button id="next-btn" onclick="nextQuestion()">Next Question</button>
+            </div>
+        </main>
+    </div>
+
+    <div id="result-screen">
+        <h2>Exam Preparation Complete!</h2>
+        <div class="score-circle"><span id="final-score">0</span>/<span id="final-total">100</span></div>
+        <p id="performance-msg"></p>
+        <div class="result-actions">
+            <button class="primary" onclick="startQuiz({ shuffle: true })">Shuffle Again</button>
+            <button onclick="reviewMissed()" id="result-review-btn">Review Missed</button>
+            <button onclick="startQuiz()">Restart</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // THE 100 QUESTION DATA BANK
+    const questions = [
+        // CHAPTER 5: SINGLE-DIMENSIONAL ARRAYS (1-25)
+        { cat: "Arrays", q: "What is an array?", options: ["A variable that stores multiple values of different types", "A collection of elements of the same type", "A type of loop", "A function that returns multiple values"], correct: 1 },
+        { cat: "Arrays", q: "What are the two fundamental properties of an array?", options: ["Name and Pointer", "Size and Memory address", "Data type and Size", "Index and Rows"], correct: 2 },
+        { cat: "Arrays", q: "How do you declare an array of 50 integers in C++?", options: ["int data(50);", "integer data[50];", "int data[50];", "array<int> data[50];"], correct: 2 },
+        { cat: "Arrays", q: "Can the size of an array be changed after it is declared?", options: ["Yes, using resize()", "No, it is fixed", "Yes, if it is an int array", "Only in the main function"], correct: 1 },
+        { cat: "Arrays", q: "What is the index of the first element in any C++ array?", options: ["1", "-1", "0", "NULL"], correct: 2 },
+        { cat: "Arrays", q: "If an array has size N, what is the index of the last element?", options: ["N", "N+1", "N-1", "0"], correct: 2 },
+        { cat: "Arrays", q: "What happens if you access mark[10] for an array 'int mark[5]'?", options: ["Compilation error", "Program crashes or accesses random memory", "It automatically expands the array", "It returns 0"], correct: 1 },
+        { cat: "Arrays", q: "Which of the following correctly initializes an array?", options: ["int n[2] = {1, 2, 3};", "int n = {1, 2};", "int n[] = {10, 20, 30};", "int n[5] = (1, 2);"], correct: 2 },
+        { cat: "Arrays", q: "What is the value of n[2] if 'int n[5] = {1, 2};'?", options: ["1", "2", "0", "Garbage value"], correct: 2 },
+        { cat: "Arrays", q: "The process of assigning initial values to an array is called:", options: ["Declaration", "Initialization", "Allocation", "Indexing"], correct: 1 },
+        { cat: "Arrays", q: "How do you find the total memory size of an array 'int arr[10]'?", options: ["arr.size()", "sizeof(arr)", "length(arr)", "count(arr)"], correct: 1 },
+        { cat: "Arrays", q: "To copy one array to another, you must:", options: ["Use the = operator", "Use a loop to copy element by element", "Use the copy() keyword", "Arrays cannot be copied"], correct: 1 },
+        { cat: "Arrays", q: "Which loop is most commonly used to iterate through an array?", options: ["while", "do-while", "for", "switch"], correct: 2 },
+        { cat: "Arrays", q: "What is the data type of an array index?", options: ["float", "double", "int", "char"], correct: 2 },
+        { cat: "Arrays", q: "Elements in an array are stored in _____ memory locations.", options: ["Random", "Contiguous (side-by-side)", "Dynamic", "Separate"], correct: 1 },
+        { cat: "Arrays", q: "What is the index of '30' in 'int x[] = {10, 20, 30, 40};'?", options: ["1", "2", "3", "30"], correct: 1 },
+        { cat: "Arrays", q: "An array of characters that ends with a null character is called a:", options: ["Float array", "String", "Pointer", "Constant"], correct: 1 },
+        { cat: "Arrays", q: "If 'int a[3] = {5};', what is a[1]?", options: ["5", "0", "Garbage", "Error"], correct: 1 },
+        { cat: "Arrays", q: "Which operator is used to access an array element?", options: ["( )", "{ }", "[ ]", "< >"], correct: 2 },
+        { cat: "Arrays", q: "Can an array store both int and float values simultaneously?", options: ["Yes", "No", "Only if size > 10", "Depends on compiler"], correct: 1 },
+        { cat: "Arrays", q: "The size of an array must be specified using a:", options: ["Variable", "Constant or Literal", "Function call", "Negative number"], correct: 1 },
+        { cat: "Arrays", q: "What is the output of 'cout << sizeof(int);' on most systems?", options: ["1", "2", "4", "8"], correct: 2 },
+        { cat: "Arrays", q: "How many elements are in 'double x[10];'?", options: ["9", "10", "11", "Infinite"], correct: 1 },
+        { cat: "Arrays", q: "Accessing an array element is also known as:", options: ["Indexing", "Subscripting", "Both A and B", "Neither"], correct: 2 },
+        { cat: "Arrays", q: "Which header is required for basic array operations?", options: ["<array>", "<vector>", "<iostream>", "None of the above"], correct: 2 },
+
+        // CHAPTER 6: MULTI-DIMENSIONAL ARRAYS (26-50)
+        { cat: "2D Arrays", q: "A 2D array can be visualized as a:", options: ["List", "Cube", "Table (Rows and Columns)", "Circle"], correct: 2 },
+        { cat: "2D Arrays", q: "How many elements are in 'int m[3][4];'?", options: ["7", "12", "3", "4"], correct: 1 },
+        { cat: "2D Arrays", q: "What does the first index in 'matrix[i][j]' usually represent?", options: ["Column", "Depth", "Row", "Size"], correct: 2 },
+        { cat: "2D Arrays", q: "Which is a valid initialization for a 2x2 matrix?", options: ["{{1,2},{3,4}}", "[1,2,3,4]", "{1;2;3;4}", "matrix(1,2,3,4)"], correct: 0 },
+        { cat: "2D Arrays", q: "How many nested loops are needed to print a 2D array?", options: ["1", "2", "3", "4"], correct: 1 },
+        { cat: "2D Arrays", q: "In 'int a[2][3][4]', how many total elements exist?", options: ["9", "24", "12", "18"], correct: 1 },
+        { cat: "2D Arrays", q: "To access the element in row 0 and column 2, you write:", options: ["a[0,2]", "a[0][2]", "a(0)(2)", "a{0}{2}"], correct: 1 },
+        { cat: "2D Arrays", q: "A 3D array is essentially an:", options: ["Array of tables", "Array of strings", "Array of functions", "Infinite list"], correct: 0 },
+        { cat: "2D Arrays", q: "Which index changes fastest in a nested loop (i = row, j = column)?", options: ["i", "j", "Both at once", "Neither"], correct: 1 },
+        { cat: "2D Arrays", q: "Can a 2D array be passed to a function?", options: ["No", "Yes", "Only if it is square", "Only in C, not C++"], correct: 1 },
+        { cat: "2D Arrays", q: "If 'int b[2][2] = {1, 2, 3, 4};', what is b[1][0]?", options: ["1", "2", "3", "4"], correct: 2 },
+        { cat: "2D Arrays", q: "A 2D array is also called a:", options: ["Vector", "Matrix", "Scalar", "Queue"], correct: 1 },
+        { cat: "2D Arrays", q: "What is the total size of 'char s[2][5]' in bytes?", options: ["7", "10", "20", "5"], correct: 1 },
+        { cat: "2D Arrays", q: "In a 3D array 'int x[2][3][2]', the first dimension '2' represents:", options: ["Rows", "Columns", "Number of 2D planes", "Size of int"], correct: 2 },
+        { cat: "2D Arrays", q: "How do you calculate the sum of a specific row 'r' in a 2D array?", options: ["Sum matrix[r][j] for all j", "Sum matrix[i][r] for all i", "Sum matrix[r][r]", "You can't"], correct: 0 },
+        { cat: "2D Arrays", q: "What is a square matrix?", options: ["All elements are 1", "Rows equal Columns", "Size is 4x4", "It has no zeros"], correct: 1 },
+        { cat: "2D Arrays", q: "The diagonal elements of a matrix 'm' have which property?", options: ["i > j", "i < j", "i == j", "i + j = 0"], correct: 2 },
+        { cat: "2D Arrays", q: "How many elements are in 'int data[1][1];'?", options: ["0", "1", "2", "Error"], correct: 1 },
+        { cat: "2D Arrays", q: "Which memory allocation does C++ use for 2D arrays by default?", options: ["Row-major", "Column-major", "Random-major", "Fragmented"], correct: 0 },
+        { cat: "2D Arrays", q: "If you define 'int a[3][2]', the last element is:", options: ["a[3][2]", "a[2][2]", "a[2][1]", "a[3][1]"], correct: 2 },
+        { cat: "2D Arrays", q: "Can you initialize only the first row of a 2D array?", options: ["Yes", "No", "Only if size is 2x2", "Only with zeros"], correct: 0 },
+        { cat: "2D Arrays", q: "What header is used for 2D arrays?", options: ["<matrix>", "<iostream>", "<table.h>", "<array2d>"], correct: 1 },
+        { cat: "2D Arrays", q: "What is the maximum number of dimensions an array can have?", options: ["2", "3", "As many as memory allows", "255"], correct: 2 },
+        { cat: "2D Arrays", q: "A 'table' with 5 rows and 2 columns is declared as:", options: ["t[2][5]", "t[5][2]", "t[5,2]", "t(5)(2)"], correct: 1 },
+        { cat: "2D Arrays", q: "3D arrays are often used in:", options: ["Basic math", "3D Graphics/Coordinates", "Naming variables", "Sorting lists"], correct: 1 },
+
+        // CHAPTER 7: JUMP STATEMENTS (51-75)
+        { cat: "Jump Statements", q: "Which is NOT a jump statement?", options: ["break", "continue", "switch", "goto"], correct: 2 },
+        { cat: "Jump Statements", q: "What does 'break' do in a loop?", options: ["Skips one turn", "Exits the loop entirely", "Restarts the loop", "Pauses the program"], correct: 1 },
+        { cat: "Jump Statements", q: "What does 'continue' do in a loop?", options: ["Exits the loop", "Skips the rest of the current iteration", "Ends the program", "Repeats the same line"], correct: 1 },
+        { cat: "Jump Statements", q: "Which statement transfers control to a labeled part of the code?", options: ["return", "goto", "break", "move"], correct: 1 },
+        { cat: "Jump Statements", q: "The 'return' statement is used to exit a:", options: ["Loop only", "Switch only", "Function", "Variable"], correct: 2 },
+        { cat: "Jump Statements", q: "Does 'break' exit all nested loops at once?", options: ["Yes", "No, only the innermost loop", "Only if it is a while loop", "Only if using goto"], correct: 1 },
+        { cat: "Jump Statements", q: "In which structure is 'break' mandatory to prevent 'fall-through'?", options: ["for loop", "switch statement", "if statement", "while loop"], correct: 1 },
+        { cat: "Jump Statements", q: "Which jump statement is considered bad practice if overused?", options: ["return", "continue", "goto", "break"], correct: 2 },
+        { cat: "Jump Statements", q: "A label for a 'goto' statement must end with a:", options: ["Semicolon ;", "Colon :", "Comma ,", "Period ."], correct: 1 },
+        { cat: "Jump Statements", q: "What happens to code after 'return' in a function?", options: ["It executes normally", "It is ignored (never reached)", "It causes an error", "It executes once"], correct: 1 },
+        { cat: "Jump Statements", q: "Use 'break' in a 'while(true)' loop to create a:", options: ["Memory leak", "Finite loop", "Syntax error", "Recursive function"], correct: 1 },
+        { cat: "Jump Statements", q: "Which statement is useful for skipping even numbers in a loop?", options: ["break", "continue", "goto", "return"], correct: 1 },
+        { cat: "Jump Statements", q: "Can 'return' return a value to the caller?", options: ["Yes", "No", "Only if the function is void", "Only in the main function"], correct: 0 },
+        { cat: "Jump Statements", q: "If 'break' is used in an 'if' inside a 'for', what stops?", options: ["The 'if' block", "The 'for' loop", "The whole program", "Nothing happens"], correct: 1 },
+        { cat: "Jump Statements", q: "A 'goto' statement can jump _____.", options: ["Only forward", "Only backward", "Both forward and backward", "Only to the main function"], correct: 2 },
+        { cat: "Jump Statements", q: "To exit a program immediately from main, use:", options: ["continue", "break", "return 0;", "goto end;"], correct: 2 },
+        { cat: "Jump Statements", q: "Which jump statement helps avoid deeply nested 'if' blocks in loops?", options: ["return", "continue", "break", "goto"], correct: 1 },
+        { cat: "Jump Statements", q: "What is the result of using 'continue' in a 'do-while' loop?", options: ["Exits loop", "Moves to the test condition", "Restarts from the beginning", "Skips the update"], correct: 1 },
+        { cat: "Jump Statements", q: "Is 'goto' allowed in modern C++?", options: ["No, it's deleted", "Yes, but discouraged", "Only in visual C++", "Yes, it is recommended"], correct: 1 },
+        { cat: "Jump Statements", q: "What jump statement is best for error handling in functions?", options: ["break", "continue", "return", "goto"], correct: 2 },
+        { cat: "Jump Statements", q: "Can you jump into a loop from outside using goto?", options: ["Yes", "No", "Only with for loops", "Only if the loop is empty"], correct: 1 },
+        { cat: "Jump Statements", q: "In a 'switch' without 'break', what is the behavior called?", options: ["Jump-over", "Fall-through", "Cascade-error", "Loop-back"], correct: 1 },
+        { cat: "Jump Statements", q: "Which statement is used to stop a search in an array immediately?", options: ["continue", "break", "goto", "switch"], correct: 1 },
+        { cat: "Jump Statements", q: "Where does 'goto label;' send the program?", options: ["To the next line", "To the line after 'label:'", "To the 'main' function", "To the 'label' variable"], correct: 1 },
+        { cat: "Jump Statements", q: "A jump statement that skips one iteration is:", options: ["break", "continue", "return", "exit"], correct: 1 },
+
+        // CHAPTER 8: CHARACTERS & STRINGS (76-100)
+        { cat: "Strings", q: "Which data type stores a single character?", options: ["string", "char", "int", "float"], correct: 1 },
+        { cat: "Strings", q: "What is the ASCII value for 'A'?", options: ["97", "48", "65", "1"], correct: 2 },
+        { cat: "Strings", q: "What is the ASCII value for 'a'?", options: ["97", "65", "48", "10"], correct: 0 },
+        { cat: "Strings", q: "How are character literals written?", options: ["\"A\"", "'A'", "(A)", "[A]"], correct: 1 },
+        { cat: "Strings", q: "What header is needed for 'toupper()' and 'isdigit()'?", options: ["<string>", "<iostream>", "<cctype>", "<cmath>"], correct: 2 },
+        { cat: "Strings", q: "What is the decimal range for ASCII digits '0'-'9'?", options: ["0-9", "48-57", "65-74", "97-106"], correct: 1 },
+        { cat: "Strings", q: "Which function reads a string until a space is found?", options: ["getline()", "cin >>", "cin.get()", "scanf_s"], correct: 1 },
+        { cat: "Strings", q: "Which function reads a whole line including spaces?", options: ["cin >>", "getline()", "gets()", "read()"], correct: 1 },
+        { cat: "Strings", q: "How do you find the length of a string 's'?", options: ["s.size()", "sizeof(s)", "count(s)", "s.length"], correct: 0 },
+        { cat: "Strings", q: "How do you join two strings 's1' and 's2'?", options: ["s1.join(s2)", "s1 + s2", "s1 & s2", "s1.add(s2)"], correct: 1 },
+        { cat: "Strings", q: "What is 'tolower('B')'?", options: ["'b'", "'B'", "98", "Error"], correct: 0 },
+        { cat: "Strings", q: "A string is essentially an array of _____.", options: ["integers", "characters", "pointers", "floats"], correct: 1 },
+        { cat: "Strings", q: "To use the 'string' class, you must include:", options: ["<iostream>", "<string.h>", "<string>", "<char>"], correct: 2 },
+        { cat: "Strings", q: "The null character is written as:", options: ["'n'", "'\\0'", "'NULL'", "'0'"], correct: 1 },
+        { cat: "Strings", q: "Which function checks if a character is a letter?", options: ["isdigit()", "isletter()", "isalpha()", "isspace()"], correct: 2 },
+        { cat: "Strings", q: "How do you access the first character of string 's'?", options: ["s[0]", "s(1)", "s.first()", "s[1]"], correct: 0 },
+        { cat: "Strings", q: "What does 'cin.ignore()' do?", options: ["Deletes a string", "Skips characters in the input buffer", "Ignores the next line of code", "None of the above"], correct: 1 },
+        { cat: "Strings", q: "Comparing 'a' and 'A', which is larger in ASCII?", options: ["'a'", "'A'", "They are equal", "Neither"], correct: 0 },
+        { cat: "Strings", q: "Which function checks if a character is a space or newline?", options: ["isspace()", "isblank()", "isalpha()", "ischar()"], correct: 0 },
+        { cat: "Strings", q: "What is 'A' + 1 in C++?", options: ["A1", "66 (B)", "65", "Error"], correct: 1 },
+        { cat: "Strings", q: "To clear the input buffer, you can use:", options: ["cin.clear()", "fflush(stdin)", "Both are common", "Neither"], correct: 2 },
+        { cat: "Strings", q: "How do you check if a string 's' is empty?", options: ["s == null", "s.empty()", "s.size() == 1", "s.clear()"], correct: 1 },
+        { cat: "Strings", q: "Which operator checks if two strings are identical?", options: ["=", "==", "is()", "compare()"], correct: 1 },
+        { cat: "Strings", q: "A 'palindrome' is a word that:", options: ["Has only vowels", "Is very long", "Reads the same backwards", "Starts with a digit"], correct: 2 },
+        { cat: "Strings", q: "C++ strings are _____.", options: ["Fixed size", "Dynamic and growable", "Only for numbers", "Difficult to use"], correct: 1 }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function loadQuestion() {
+        const qData = questions[currentQuestionIndex];
+        
+        // Update UI
+        document.getElementById("category").innerText = qData.cat;
+        document.getElementById("progress-text").innerText = `${currentQuestionIndex + 1} / ${questions.length}`;
+        document.getElementById("progress-bar").value = currentQuestionIndex + 1;
+        document.getElementById("question-text").innerText = qData.q;
+        
+        const container = document.getElementById("options-container");
+        container.innerHTML = "";
+        
+        qData.options.forEach((opt, index) => {
+            const btn = document.createElement("button");
+            btn.innerText = opt;
+            btn.classList.add("option-btn");
+            btn.onclick = () => checkAnswer(index, btn);
+            container.appendChild(btn);
+        });
+
+        document.getElementById("next-btn").style.display = "none";
+        document.getElementById("feedback").innerText = "";
+    }
+
+    function checkAnswer(index, btn) {
+        const correctIdx = questions[currentQuestionIndex].correct;
+        const allBtns = document.querySelectorAll(".option-btn");
+        
+        allBtns.forEach(b => b.disabled = true);
+
+        if (index === correctIdx) {
+            btn.classList.add("correct");
+            score++;
+            document.getElementById("feedback").innerText = "✔ Correct!";
+            document.getElementById("feedback").style.color = "var(--success)";
+        } else {
+            btn.classList.add("wrong");
+            allBtns[correctIdx].classList.add("correct");
+            document.getElementById("feedback").innerText = "✘ Incorrect.";
+            document.getElementById("feedback").style.color = "var(--danger)";
+        }
+
+        document.getElementById("next-btn").style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById("quiz-box").style.display = "none";
+        document.getElementById("result-screen").style.display = "block";
+        document.getElementById("final-score").innerText = score;
+        
+        let msg = "";
+        if(score > 90) msg = "Excellent! You are ready for the final exam.";
+        else if(score > 70) msg = "Good job! A little more review and you'll be perfect.";
+        else msg = "Keep studying! Try reviewing the PDF lessons again.";
+        
+        document.getElementById("performance-msg").innerText = msg;
+    }
+
+    // Start
+    loadQuestion();
+</script>
+
+<script>
+    const optionLetters = ["A", "B", "C", "D"];
+    const allQuestions = questions.map((question, index) => ({ ...question, id: index }));
+    const categories = ["All", ...new Set(allQuestions.map(question => question.cat))];
+
+    let streak = 0;
+    let bestStreak = 0;
+    let missedQuestions = [];
+    let activeCategory = "All";
+    let activeQuestions = [...allQuestions];
+    let quizStartedAt = Date.now();
+    let timerId = null;
+    let answeredCurrent = false;
+
+    function shuffleArray(items) {
+        const copy = [...items];
+        for (let i = copy.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+    }
+
+    function formatTime(milliseconds) {
+        const totalSeconds = Math.floor(milliseconds / 1000);
+        const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
+        const seconds = String(totalSeconds % 60).padStart(2, "0");
+        return `${minutes}:${seconds}`;
+    }
+
+    function startTimer() {
+        clearInterval(timerId);
+        quizStartedAt = Date.now();
+        document.getElementById("timer-text").innerText = "00:00";
+        timerId = setInterval(() => {
+            document.getElementById("timer-text").innerText = formatTime(Date.now() - quizStartedAt);
+        }, 1000);
+    }
+
+    function updateStats() {
+        document.getElementById("score-text").innerText = `${score}/${activeQuestions.length}`;
+        document.getElementById("streak-text").innerText = streak;
+        document.getElementById("best-streak-text").innerText = bestStreak;
+        document.getElementById("review-btn").disabled = missedQuestions.length === 0;
+        document.getElementById("result-review-btn").disabled = missedQuestions.length === 0;
+    }
+
+    function renderCategoryFilters() {
+        const filters = document.getElementById("category-filters");
+        filters.innerHTML = "";
+
+        categories.forEach(category => {
+            const button = document.createElement("button");
+            button.className = `chip${category === activeCategory ? " active" : ""}`;
+            button.innerText = category;
+            button.onclick = () => {
+                activeCategory = category;
+                renderCategoryFilters();
+                startQuiz();
+            };
+            filters.appendChild(button);
+        });
+    }
+
+    function getFilteredQuestions() {
+        if (activeCategory === "All") return [...allQuestions];
+        return allQuestions.filter(question => question.cat === activeCategory);
+    }
+
+    function startQuiz(options = {}) {
+        const filtered = options.review ? [...missedQuestions] : getFilteredQuestions();
+        activeQuestions = options.shuffle ? shuffleArray(filtered) : filtered;
+        currentQuestionIndex = 0;
+        score = 0;
+        streak = 0;
+        bestStreak = 0;
+        if (!options.review) missedQuestions = [];
+        answeredCurrent = false;
+
+        document.getElementById("result-screen").style.display = "none";
+        document.getElementById("app-shell").classList.remove("hidden");
+        startTimer();
+        updateStats();
+        loadQuestion();
+    }
+
+    function reviewMissed() {
+        if (missedQuestions.length === 0) return;
+        startQuiz({ review: true });
+    }
+
+    function loadQuestion() {
+        const qData = activeQuestions[currentQuestionIndex];
+        
+        document.getElementById("category").innerText = qData.cat;
+        document.getElementById("progress-text").innerText = `${currentQuestionIndex + 1} / ${activeQuestions.length}`;
+        document.getElementById("progress-bar").value = currentQuestionIndex + 1;
+        document.getElementById("progress-bar").max = activeQuestions.length;
+        document.getElementById("question-text").innerText = qData.q;
+        
+        const container = document.getElementById("options-container");
+        container.innerHTML = "";
+        
+        qData.options.forEach((opt, index) => {
+            const btn = document.createElement("button");
+            btn.classList.add("option-btn");
+            btn.innerHTML = `<span class="option-key">${optionLetters[index]}</span><span>${opt}</span>`;
+            btn.onclick = () => checkAnswer(index, btn);
+            container.appendChild(btn);
+        });
+
+        document.getElementById("next-btn").style.display = "none";
+        document.getElementById("feedback").innerText = "Choose an answer to continue.";
+        document.getElementById("feedback").style.color = "var(--muted)";
+        answeredCurrent = false;
+        updateStats();
+    }
+
+    function checkAnswer(index, btn) {
+        if (answeredCurrent) return;
+        answeredCurrent = true;
+
+        const question = activeQuestions[currentQuestionIndex];
+        const correctIdx = question.correct;
+        const allBtns = document.querySelectorAll(".option-btn");
+        
+        allBtns.forEach(b => b.disabled = true);
+
+        if (index === correctIdx) {
+            btn.classList.add("correct");
+            score++;
+            streak++;
+            bestStreak = Math.max(bestStreak, streak);
+            document.getElementById("feedback").innerText = `Correct. Nice streak: ${streak}.`;
+            document.getElementById("feedback").style.color = "var(--success)";
+        } else {
+            btn.classList.add("wrong");
+            allBtns[correctIdx].classList.add("correct");
+            streak = 0;
+            if (!missedQuestions.some(item => item.id === question.id)) {
+                missedQuestions.push(question);
+            }
+            document.getElementById("feedback").innerText = `Incorrect. Correct answer: ${optionLetters[correctIdx]}.`;
+            document.getElementById("feedback").style.color = "var(--danger)";
+        }
+
+        updateStats();
+        document.getElementById("next-btn").style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < activeQuestions.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        clearInterval(timerId);
+        document.getElementById("app-shell").classList.add("hidden");
+        document.getElementById("result-screen").style.display = "block";
+        document.getElementById("final-score").innerText = score;
+        document.getElementById("final-total").innerText = activeQuestions.length;
+        
+        const percentage = Math.round((score / activeQuestions.length) * 100);
+        let msg = "";
+        if(percentage >= 90) msg = "Excellent. You are ready for the final exam.";
+        else if(percentage >= 70) msg = "Good job. Review the missed questions and you will be in strong shape.";
+        else msg = "Keep studying. Use Review Missed, then try the full shuffled set again.";
+        
+        document.getElementById("performance-msg").innerText = msg;
+        updateStats();
+    }
+
+    document.addEventListener("keydown", event => {
+        if (document.getElementById("app-shell").classList.contains("hidden")) return;
+        const key = event.key.toLowerCase();
+        const optionIndex = ["1", "2", "3", "4", "a", "b", "c", "d"].indexOf(key);
+
+        if (optionIndex > -1) {
+            const normalizedIndex = optionIndex % 4;
+            const button = document.querySelectorAll(".option-btn")[normalizedIndex];
+            if (button && !button.disabled) button.click();
+        }
+
+        if (key === "enter" && answeredCurrent) {
+            nextQuestion();
+        }
+    });
+
+    renderCategoryFilters();
+    startQuiz();
+</script>
+
+</body>
+</html>
