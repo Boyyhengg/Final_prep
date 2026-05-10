@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>C++ Exam Mastery: 100 Questions</title>
+    <title>C++ Exam Mastery: 130 Questions</title>
     <style>
         :root {
             --primary: #1d4ed8;
@@ -205,6 +205,34 @@
             margin: 1.4rem 0;
         }
 
+        .question.has-code {
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .question-prompt {
+            font-size: clamp(1.25rem, 2vw, 1.65rem);
+            font-weight: 800;
+            line-height: 1.3;
+            margin-bottom: 14px;
+        }
+
+        .question-code {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            color: #e2e8f0;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 0.96rem;
+            font-weight: 500;
+            line-height: 1.55;
+            margin: 0;
+            max-width: 100%;
+            overflow-x: auto;
+            padding: 16px;
+            white-space: pre;
+        }
+
         .options-grid {
             display: grid;
             gap: 12px;
@@ -223,6 +251,19 @@
             align-items: center;
             gap: 12px;
             min-height: 58px;
+        }
+
+        .option-label {
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+
+        .option-label.code-like {
+            background: var(--panel-soft);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: Consolas, "Courier New", monospace;
+            padding: 4px 6px;
         }
 
         .option-btn:hover:not(:disabled) {
@@ -366,7 +407,7 @@
         <aside class="sidebar">
             <div class="brand">
                 <h1>C++ Exam Mastery</h1>
-                <p>Practice 100 questions with instant feedback, topic filters, streak tracking, and review mode.</p>
+                <p>Practice 130 questions with instant feedback, topic filters, streak tracking, and review mode.</p>
             </div>
 
             <div class="stats-grid">
@@ -389,9 +430,9 @@
         <main class="quiz-panel" id="quiz-box">
             <div class="header">
                 <span class="category-tag" id="category">Topic Name</span>
-                <span id="progress-text">1 / 100</span>
+                <span id="progress-text">1 / 130</span>
             </div>
-            <progress id="progress-bar" value="1" max="100"></progress>
+            <progress id="progress-bar" value="1" max="130"></progress>
             
             <div class="question" id="question-text">Loading question...</div>
             
@@ -417,7 +458,7 @@
 </div>
 
 <script>
-    // THE 100 QUESTION DATA BANK
+    // THE 130 QUESTION DATA BANK
     const questions = [
         // CHAPTER 5: SINGLE-DIMENSIONAL ARRAYS (1-25)
         { cat: "Arrays", q: "What is an array?", options: ["A variable that stores multiple values of different types", "A collection of elements of the same type", "A type of loop", "A function that returns multiple values"], correct: 1 },
@@ -525,35 +566,47 @@
         { cat: "Strings", q: "How do you check if a string 's' is empty?", options: ["s == null", "s.empty()", "s.size() == 1", "s.clear()"], correct: 1 },
         { cat: "Strings", q: "Which operator checks if two strings are identical?", options: ["=", "==", "is()", "compare()"], correct: 1 },
         { cat: "Strings", q: "A 'palindrome' is a word that:", options: ["Has only vowels", "Is very long", "Reads the same backwards", "Starts with a digit"], correct: 2 },
-        { cat: "Strings", q: "C++ strings are _____.", options: ["Fixed size", "Dynamic and growable", "Only for numbers", "Difficult to use"], correct: 1 }
+        { cat: "Strings", q: "C++ strings are _____.", options: ["Fixed size", "Dynamic and growable", "Only for numbers", "Difficult to use"], correct: 1 },
+
+        // NEW PROBLEM SECTION: JUMP STATEMENT CODE ANALYSIS (101-110)
+        { cat: "Jump Code", q: "What will be the output?\nint i = 0;\nwhile(i < 5){\n    if(i == 2)\n        break;\n    cout << i << \" \";\n    i++;\n}", options: ["0 1 2 3 4", "0 1", "2 3 4", "No output, infinite loop"], correct: 1 },
+        { cat: "Jump Code", q: "Why might you use while(true) with a break inside the loop?", options: ["To create an infinite loop with no exit", "To ensure the loop condition is checked before the loop body runs", "To execute the loop body first and then use a condition inside to exit", "It is never advisable to use while(true)"], correct: 2 },
+        { cat: "Jump Code", q: "What does the continue statement do inside a loop?", options: ["Exits the entire loop immediately", "Skips the current iteration and proceeds with the next one", "Skips all remaining iterations of the loop", "Terminates the program"], correct: 1 },
+        { cat: "Jump Code", q: "What gets printed?\nfor(int i = 0; i < 5; i++){\n    if(i == 2)\n        continue;\n    cout << i << \" \";\n}", options: ["0 1 2 3 4", "2", "0 1 3 4", "Nothing is printed"], correct: 2 },
+        { cat: "Jump Code", q: "In nested loops, what happens when a break statement is encountered inside the inner loop?", options: ["Both inner and outer loops break", "Only the inner loop breaks, and the outer loop continues", "Only the outer loop breaks", "The program terminates immediately"], correct: 1 },
+        { cat: "Jump Code", q: "How can you immediately exit multiple nested loops at once in C++?", options: ["Using continue", "Using one break statement", "Using goto with a label outside the loops", "Using break label;"], correct: 2 },
+        { cat: "Jump Code", q: "Which of the following is the correct syntax of a goto statement?", options: ["goto label; ... label: // code", "jump label;", "continue label;", "break label;"], correct: 0 },
+        { cat: "Jump Code", q: "What is the function of a return statement inside a function?", options: ["Restart the function from the beginning", "Stop function execution immediately and optionally return a value", "Pause the function and resume later", "Do nothing; it is just a comment"], correct: 1 },
+        { cat: "Jump Code", q: "What will be printed?\ncout << \"Hello\";\nreturn 0;\ncout << \"Done\";", options: ["Hello Done", "Done", "Hello", "Nothing"], correct: 2 },
+        { cat: "Jump Code", q: "In a while loop with continue, why should you increment the counter before continue when the counter controls the loop?", options: ["To make the loop infinite", "To avoid skipping iterations", "To prevent an infinite loop by updating the loop variable before skipping the rest of the body", "There is no need to increment before continue"], correct: 2 },
+
+        // NEW PROBLEM SECTION: SINGLE-DIMENSIONAL ARRAY CODE ANALYSIS (111-120)
+        { cat: "Array Code", q: "What will be the output?\nchar vowels[6] = {'a', 'e', 'i', 'o', 'u', 'y'};\ncout << vowels[0] << endl << vowels[5];", options: ["a y", "a u", "y a", "Compilation error"], correct: 0 },
+        { cat: "Array Code", q: "What is the size, meaning number of elements, of this array?\nint mark[] = {19, 10, 8, 17, 9};", options: ["4", "5", "6", "Cannot be determined"], correct: 1 },
+        { cat: "Array Code", q: "What happens if you try to access vowels[6]?\nchar vowels[6] = {'a', 'e', 'i', 'o', 'u', 'y'};\ncout << vowels[6];", options: ["Outputs a null character", "Outputs a garbage value or causes unpredictable behavior", "Throws an array-out-of-bound exception and program terminates", "Compiler error"], correct: 1 },
+        { cat: "Array Code", q: "Given int data[100]; what is the output of cout << sizeof(data); assuming int is 4 bytes?", options: ["100", "104", "400", "Compiler error"], correct: 2 },
+        { cat: "Array Code", q: "What is the value of size?\nchar vowels[] = {'a', 'e', 'i', 'o', 'u', 'y'};\nint size = sizeof(vowels) / sizeof(char);", options: ["5", "6", "Size of vowels in bytes", "Depends on the system architecture"], correct: 1 },
+        { cat: "Array Code", q: "How do you correctly update the third element of mark to -1?\nint mark[5] = {19, 10, 8, 17, 9};", options: ["mark[2] = -1;", "mark[3] = -1;", "mark(2) = -1;", "mark[-1] = 2;"], correct: 0 },
+        { cat: "Array Code", q: "Which loop correctly takes 5 integers from the user and stores them in values?\nint values[5];", options: ["for(int i=1; i<=5; i++) cin >> values[i];", "for(int i=0; i<5; i++) cin >> values[i];", "for(int i=0; i<=5; i++) cin >> values[i];", "for(int i=1; i<6; i++) cin >> values[i];"], correct: 1 },
+        { cat: "Array Code", q: "What is the output?\nint mark[5] = {19, 10, 8, 17, 9};\nmark[2] = -1;\ncout << mark[2];", options: ["8", "-1", "17", "Compilation error"], correct: 1 },
+        { cat: "Array Code", q: "What is the first index of an array in C++?", options: ["1", "0", "-1", "Depends on the compiler"], correct: 1 },
+        { cat: "Array Code", q: "Which of the following is NOT true about arrays in C++?", options: ["The size and data type cannot be changed after declaration", "Initializing with no size but providing elements is allowed", "Accessing out-of-bound elements will throw a runtime error", "Array elements are accessed by zero-based indexing"], correct: 2 },
+
+        // NEW PROBLEM SECTION: CHARACTER AND STRING CODE ANALYSIS (121-130)
+        { cat: "Char/String Code", q: "What does the following code output?\nchar ch1 = 'A';\nchar ch2 = 70;\ncout << ch1 << endl;\ncout << ch2;", options: ["A F", "65 70", "'A' 'F'", "Compilation error"], correct: 0 },
+        { cat: "Char/String Code", q: "What is the output?\nchar ch = 'A';\nint number = ch + 3;\ncout << number;", options: ["67", "70", "'D'", "68"], correct: 3 },
+        { cat: "Char/String Code", q: "What will be the output?\ncout << ('a' < 'b') << endl;\ncout << ('a' < 'A') << endl;\ncout << ('1' < '8');", options: ["0 0 0", "1 1 1", "1 0 1", "0 1 0"], correct: 2 },
+        { cat: "Char/String Code", q: "If char ch = 'D'; what is the output of the uppercase/lowercase/digit check?", options: ["D is an uppercase letter", "D is a lowercase letter", "D is a numeric character or a digit", "No output"], correct: 0 },
+        { cat: "Char/String Code", q: "Which character function will return true for the character '5'?", options: ["isdigit()", "isalpha()", "isspace()", "All of the above"], correct: 0 },
+        { cat: "Char/String Code", q: "What is the output?\nchar ch = 'A';\nch = tolower(ch);\ncout << ch;", options: ["A", "a", "'A'", "Error"], correct: 1 },
+        { cat: "Char/String Code", q: "What will this code print?\nstring str1 = \"Hello\", str2 = \"World\";\nstring str3 = str1 + \" \" + str2;\ncout << str3;", options: ["Hello World", "HelloWorld", "Hello World!", "Error"], correct: 0 },
+        { cat: "Char/String Code", q: "How does this program handle string copying?\nstring str1, str2 = \"C++ programming\";\nstr1 = str2;\ncout << str1;", options: ["Prints C++ programming", "Error: cannot assign", "Prints nothing", "Compilation fails"], correct: 0 },
+        { cat: "Char/String Code", q: "Which statement correctly concatenates two strings?", options: ["string s = \"Hello\" + \"World\";", "string s = string(\"Hello\") + \" \" + \"World\";", "string s = \"Hello\" + \"World\" + 0;", "string s = \"Hello\" * \"World\";"], correct: 1 },
+        { cat: "Char/String Code", q: "To determine the length of the string \"Learn C++\", which functions are valid?", options: ["size()", "length()", "Both A and B", "Neither A nor B"], correct: 2 }
     ];
 
     let currentQuestionIndex = 0;
     let score = 0;
-
-    function loadQuestion() {
-        const qData = questions[currentQuestionIndex];
-        
-        // Update UI
-        document.getElementById("category").innerText = qData.cat;
-        document.getElementById("progress-text").innerText = `${currentQuestionIndex + 1} / ${questions.length}`;
-        document.getElementById("progress-bar").value = currentQuestionIndex + 1;
-        document.getElementById("question-text").innerText = qData.q;
-        
-        const container = document.getElementById("options-container");
-        container.innerHTML = "";
-        
-        qData.options.forEach((opt, index) => {
-            const btn = document.createElement("button");
-            btn.innerText = opt;
-            btn.classList.add("option-btn");
-            btn.onclick = () => checkAnswer(index, btn);
-            container.appendChild(btn);
-        });
-
-        document.getElementById("next-btn").style.display = "none";
-        document.getElementById("feedback").innerText = "";
-    }
 
     function checkAnswer(index, btn) {
         const correctIdx = questions[currentQuestionIndex].correct;
@@ -598,11 +651,6 @@
         document.getElementById("performance-msg").innerText = msg;
     }
 
-    // Start
-    loadQuestion();
-</script>
-
-<script>
     const optionLetters = ["A", "B", "C", "D"];
     const allQuestions = questions.map((question, index) => ({ ...question, id: index }));
     const categories = ["All", ...new Set(allQuestions.map(question => question.cat))];
@@ -693,6 +741,34 @@
         startQuiz({ review: true });
     }
 
+    function renderQuestionText(qData) {
+        const questionEl = document.getElementById("question-text");
+        questionEl.innerHTML = "";
+        questionEl.className = "question";
+
+        if (!qData.q.includes("\n")) {
+            questionEl.textContent = qData.q;
+            return;
+        }
+
+        const [prompt, ...codeLines] = qData.q.split("\n");
+        questionEl.classList.add("has-code");
+
+        const promptEl = document.createElement("div");
+        promptEl.className = "question-prompt";
+        promptEl.textContent = prompt;
+
+        const codeEl = document.createElement("pre");
+        codeEl.className = "question-code";
+        codeEl.textContent = codeLines.join("\n");
+
+        questionEl.append(promptEl, codeEl);
+    }
+
+    function isCodeLikeOption(option) {
+        return /[;{}()[\]<>]|cout|cin|string|sizeof|isdigit|isalpha|isspace|length|size/.test(option);
+    }
+
     function loadQuestion() {
         const qData = activeQuestions[currentQuestionIndex];
         
@@ -700,7 +776,7 @@
         document.getElementById("progress-text").innerText = `${currentQuestionIndex + 1} / ${activeQuestions.length}`;
         document.getElementById("progress-bar").value = currentQuestionIndex + 1;
         document.getElementById("progress-bar").max = activeQuestions.length;
-        document.getElementById("question-text").innerText = qData.q;
+        renderQuestionText(qData);
         
         const container = document.getElementById("options-container");
         container.innerHTML = "";
@@ -708,7 +784,13 @@
         qData.options.forEach((opt, index) => {
             const btn = document.createElement("button");
             btn.classList.add("option-btn");
-            btn.innerHTML = `<span class="option-key">${optionLetters[index]}</span><span>${opt}</span>`;
+            const key = document.createElement("span");
+            key.className = "option-key";
+            key.textContent = optionLetters[index];
+            const label = document.createElement("span");
+            label.className = `option-label${isCodeLikeOption(opt) ? " code-like" : ""}`;
+            label.textContent = opt;
+            btn.append(key, label);
             btn.onclick = () => checkAnswer(index, btn);
             container.appendChild(btn);
         });
@@ -726,6 +808,7 @@
 
         const question = activeQuestions[currentQuestionIndex];
         const correctIdx = question.correct;
+        const correctAnswer = `${optionLetters[correctIdx]}) ${question.options[correctIdx]}`;
         const allBtns = document.querySelectorAll(".option-btn");
         
         allBtns.forEach(b => b.disabled = true);
@@ -735,7 +818,7 @@
             score++;
             streak++;
             bestStreak = Math.max(bestStreak, streak);
-            document.getElementById("feedback").innerText = `Correct. Nice streak: ${streak}.`;
+            document.getElementById("feedback").innerText = `Correct. Answer: ${correctAnswer}. Nice streak: ${streak}.`;
             document.getElementById("feedback").style.color = "var(--success)";
         } else {
             btn.classList.add("wrong");
@@ -744,7 +827,7 @@
             if (!missedQuestions.some(item => item.id === question.id)) {
                 missedQuestions.push(question);
             }
-            document.getElementById("feedback").innerText = `Incorrect. Correct answer: ${optionLetters[correctIdx]}.`;
+            document.getElementById("feedback").innerText = `Incorrect. Correct answer: ${correctAnswer}.`;
             document.getElementById("feedback").style.color = "var(--danger)";
         }
 
